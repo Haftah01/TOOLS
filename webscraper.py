@@ -55,7 +55,7 @@ async def custom_knowledge_scraper():
     import os
     import csv
 
-    start_url = "http://absolutedestinationsltd.com/"
+    start_url = "http://yoursitelink.com/"
     max_depth = 2
     max_pages = 50
     domain = urlparse(start_url).netloc
