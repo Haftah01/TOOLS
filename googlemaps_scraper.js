@@ -63,8 +63,8 @@ async function fetchAllResults() {
     while (allResults.length < maxResults) {
         const queryParams = {
             engine: "google_maps",
-            q: "Immigration Agencies, Immigration Consultant, Travel Consultants, Travel Agencies, Tourism Agencies, Studyabroad agencies",
-            ll: "@8.806585676012947, 7.091589710338597,10z", // Zoomed out from 14z format to 10z
+            q: "Key words, Key Words, Key Words, Key Words, Key Words, Key Words", // Key words are phrases or words related the leads you want to scrape
+            ll: "@8.806585676012947, 7.091589710338597,10z", // Zoomed out to 10z, to get the long & Lat, right click on the already mappe section on google maps to copy and set zoom rate.
             api_key: apiKey,
             type: "search",
             radius: 50000, // Widened search radius
