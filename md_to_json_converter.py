@@ -175,7 +175,7 @@ if __name__ == "__main__":
     # Change the string below to the path of the Markdown file you want to read.
     # You can also use a web hyperlink directly (e.g., "https://example.com/file.md")
 
-    INPUT_SOURCE = r"C:\Users\HAFTAH\Desktop\PERSONAL\PRODUCT\(quantumtravels)site_Database.md"
+    INPUT_SOURCE = r"https://example.com/file.md"
     
     # -------------------------------------------------------------------------
     # 🎯 WHERE DO YOU WANT TO SAVE IT? (OPTIONAL) 🎯
