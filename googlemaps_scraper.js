@@ -5,7 +5,7 @@ import path from "path";
 
 
 dotenv.config();
-const apiKey = process.env.API_KEY
+const apiKey = process.env.SERP_API_KEY
 
 /**
  * Writes the scraped Google Maps results to a CSV file.
