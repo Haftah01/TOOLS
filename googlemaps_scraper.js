@@ -63,6 +63,8 @@ function writeToCsv(allResults) {
  *
  * @returns {Promise<void>}
  */
+
+//KEYWORDS TO SEARCH
 async function fetchAllResults() {
     const keywords = [
         "KEYWORD1",
@@ -70,7 +72,6 @@ async function fetchAllResults() {
         "KEYWORD3",
         "KEYWORD4",
         "KEYWORD5"
-        //ADD MORE AS YOU WISH
     ];
 
     let allResults = [];
