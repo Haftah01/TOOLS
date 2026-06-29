@@ -1,3 +1,4 @@
+
 import dotenv from "dotenv"
 import { getJson } from "serpapi";
 import fs from "fs";
@@ -64,11 +65,12 @@ function writeToCsv(allResults) {
  */
 async function fetchAllResults() {
     const keywords = [
-        "Travel Agencies",
-        "Hotels",
-        "Restaurants",
-        "Hospitality",
-        "Tour Agencies"
+        "KEYWORD1",
+        "KEYWORD2",
+        "KEYWORD3",
+        "KEYWORD4",
+        "KEYWORD5"
+        //ADD MORE AS YOU WISH
     ];
 
     let allResults = [];
@@ -86,7 +88,7 @@ async function fetchAllResults() {
             const queryParams = {
                 engine: "google_maps",
                 q: keyword,
-                ll: "@51.98828211382314, -100.97396475364305,6z",
+                ll: "@51.98828211382314, -100.97396475364305,6z", // Add your location here (latitude, longitude, zoom)
                 api_key: apiKey,
                 type: "search",
                 radius: 50000,
@@ -141,5 +143,3 @@ async function fetchAllResults() {
     console.log(`Final unique results found: ${uniqueResults.length}`);
     writeToCsv(uniqueResults);
 }
-
-fetchAllResults();

@@ -2,3 +2,32 @@
 node_modules/
 __pycache__/
 *.pyc
+
+*.md
+*.csv
+*.json
+
+# Node modules
+node_modules/
+
+# Environment files (keep your API keys private)
+.env
+
+
+# OS‑specific files
+Thumbs.db
+Desktop.ini
+
+# npm lockfile (optional – keep if you want reproducible installs)
+package-lock.json
+
+
+
+SERP_API_KEY= ""
+APOLLO_API_KEY= ""
+EXPLORIUM_API_KEY= ""
+SCRAPINGBEE_API_KEY= ""
+SCRAPINGBEE_2ND_API_KEY= ""
+CLAY_API_KEY= ""
+KLAZIFY_API_KEY= ""
+# Add more variables as needed

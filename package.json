@@ -4,13 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "googlemaps": "node googlemaps_scraper.js",
+    "smartvetting": "node smart_vetting_engine.js",
+    "companyanalyzer": "node company_analyzer.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "axios": "^1.16.1",
+    "csv-parser": "^3.2.1",
     "dotenv": "^17.3.1",
     "serpapi": "^2.2.1"
   }
