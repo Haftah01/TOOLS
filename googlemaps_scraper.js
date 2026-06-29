@@ -1,3 +1,4 @@
+
 import dotenv from "dotenv"
 import { getJson } from "serpapi";
 import fs from "fs";
@@ -141,5 +142,3 @@ async function fetchAllResults() {
     console.log(`Final unique results found: ${uniqueResults.length}`);
     writeToCsv(uniqueResults);
 }
-
-fetchAllResults();
