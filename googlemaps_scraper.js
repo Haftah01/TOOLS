@@ -20,7 +20,16 @@ function writeToCsv(allResults) {
         return;
     }
 
-    const csvFilePath = path.join(process.cwd(), "results1.csv");
+    let counter = 1;
+    let fileName = `results${counter}.csv`;
+    let csvFilePath = path.join(process.cwd(), fileName);
+
+    // Increment filename if it already exists
+    while (fs.existsSync(csvFilePath)) {
+        counter++;
+        fileName = `results${counter}.csv`;
+        csvFilePath = path.join(process.cwd(), fileName);
+    }
 
     // Define CSV Headers
     const headers = ["Title", "Rating", "Reviews", "Address", "Phone", "Website"];
@@ -43,7 +52,7 @@ function writeToCsv(allResults) {
 
     // Write to file
     fs.writeFileSync(csvFilePath, csvContent, 'utf8');
-    console.log(`Successfully wrote ${allResults.length} results to ${csvFilePath}`);
+    console.log(`Successfully wrote ${allResults.length} unique results to ${fileName}`);
 }
 
 /**
@@ -54,64 +63,83 @@ function writeToCsv(allResults) {
  * @returns {Promise<void>}
  */
 async function fetchAllResults() {
+    const keywords = [
+        "Travel Agencies",
+        "Hotels",
+        "Restaurants",
+        "Hospitality",
+        "Tour Agencies"
+    ];
+
     let allResults = [];
-    let start = 0;
-    const maxResults = 200; // Increased limit to 200
+    const maxResultsPerKeyword = 60; // Fetch up to 3 pages per keyword to get depth
+    const totalMaxResults = 1000;    // High ceiling for total results
 
-    console.log("Fetching results from SerpApi...");
+    console.log("Starting multi-keyword search to maximize results...");
 
-    while (allResults.length < maxResults) {
-        const queryParams = {
-            engine: "google_maps",
-            q: "Key words, Key Words, Key Words, Key Words, Key Words, Key Words", // Key words are phrases or words related the leads you want to scrape
-            ll: "@8.806585676012947, 7.091589710338597,10z", // Zoomed out to 10z, to get the long & Lat, right click on the already mappe section on google maps to copy and set zoom rate.
-            api_key: apiKey,
-            type: "search",
-            radius: 50000, // Widened search radius
-            start: start
-        };
+    for (const keyword of keywords) {
+        console.log(`\n--- Searching for: ${keyword} ---`);
+        let start = 0;
+        let keywordCount = 0;
 
-        try {
-            // Promisify the getJson call to use async/await
-            const json = await new Promise((resolve, reject) => {
-                getJson(queryParams, resolve);
-            });
+        while (keywordCount < maxResultsPerKeyword && allResults.length < totalMaxResults) {
+            const queryParams = {
+                engine: "google_maps",
+                q: keyword,
+                ll: "@51.98828211382314, -100.97396475364305,6z",
+                api_key: apiKey,
+                type: "search",
+                radius: 50000,
+                start: start
+            };
 
-            if (json.local_results && json.local_results.length > 0) {
-                // Add the new results
-                allResults = allResults.concat(json.local_results);
-                console.log(`Fetched ${json.local_results.length} results. Total so far: ${Math.min(allResults.length, maxResults)}`);
+            try {
+                const json = await new Promise((resolve, reject) => {
+                    getJson(queryParams, (data) => resolve(data));
+                });
 
-                // Prepare for next page (Google Maps usually returns 20 results per page)
-                start += 20;
+                if (json.local_results && json.local_results.length > 0) {
+                    allResults = allResults.concat(json.local_results);
+                    keywordCount += json.local_results.length;
+                    console.log(`Fetched ${json.local_results.length} results for "${keyword}". Total so far: ${allResults.length}`);
 
-                // Stop if we've reached the end of the available results (no next page)
-                if (!json.serpapi_pagination || !json.serpapi_pagination.next) {
-                    console.log("No more pages available.");
+                    // Prepare for next page
+                    start += 20;
+
+                    // Stop if no more pages for this keyword
+                    if (!json.serpapi_pagination || !json.serpapi_pagination.next) {
+                        break;
+                    }
+
+                    // Small delay to respect API limits
+                    await new Promise(res => setTimeout(res, 1000));
+                } else {
+                    console.log(`No more results for "${keyword}".`);
                     break;
                 }
-
-                // Add a small delay between requests to avoid rate limits / connection resets
-                if (allResults.length < maxResults) {
-                    await new Promise(res => setTimeout(res, 2000));
-                }
-
-            } else {
-                console.log("No more local results found on this page.");
+            } catch (error) {
+                console.error(`Error fetching "${keyword}":`, error);
                 break;
             }
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            break;
         }
     }
 
-    // Slice any excess results if we fetched more than 200
-    if (allResults.length > maxResults) {
-        allResults = allResults.slice(0, maxResults);
+    // Deduplicate results based on Title and Address
+    console.log("\nCleaning up duplicates...");
+    const uniqueResults = [];
+    const seen = new Set();
+
+    for (const result of allResults) {
+        // Create a unique key (lowercase title + address)
+        const key = `${result.title}|${result.address}`.toLowerCase();
+        if (!seen.has(key)) {
+            seen.add(key);
+            uniqueResults.push(result);
+        }
     }
 
-    writeToCsv(allResults);
+    console.log(`Final unique results found: ${uniqueResults.length}`);
+    writeToCsv(uniqueResults);
 }
 
 fetchAllResults();
